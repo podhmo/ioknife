@@ -16,4 +16,4 @@ optional arguments:
 
 ## subcommands
 
-see [docs](./docs)
+see [docs](https://github.com/podhmo/ioknife/tree/master/docs)
