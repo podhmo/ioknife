@@ -21,4 +21,8 @@ setup(
     extras_require={"testing": tests_requires, "dev": dev_requires},
     tests_require=tests_requires,
     test_suite="ioknife.tests",
+    entry_points="""
+      [console_scripts]
+      ioknife = ioknife.cli:main
+""",
 )
