@@ -10,4 +10,3 @@ script:
   - python setup.py test
   - make ci
   - make lint
-
