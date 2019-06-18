@@ -30,7 +30,6 @@ def main() -> None:
     sparser.set_defaults(subcommand=fn)
     sparser.add_argument("-n", required=False, default=1, type=int, help="(default: 1)")
 
-
     args = parser.parse_args()
     params = vars(args).copy()
     logging.basicConfig(level=getattr(logging, params.pop("log_level")))

@@ -5,6 +5,10 @@ format:
 #	pip install -e .[dev]
 	black ioknife setup.py
 
+lint:
+#	pip install -e .[dev]
+	flake8 ioknife --ignore W503,E203,E501
+
 build:
 #	pip install wheel
 	python setup.py bdist_wheel
