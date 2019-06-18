@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/podhmo/ioknife.svg?branch=master)](https://travis-ci.org/podhmo/ioknife)
+
 # ioknife
 
 ```console
