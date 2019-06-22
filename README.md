@@ -17,3 +17,9 @@ optional arguments:
 ## subcommands
 
 see [docs](https://github.com/podhmo/ioknife/tree/master/docs)
+
+## Changes
+
+0.1.0
+
+- `ioknife too` command is added.
