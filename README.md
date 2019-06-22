@@ -2,14 +2,16 @@
 
 # ioknife
 
+knives for io.
+
 ```console
 $ ioknife -h
 usage: ioknife [-h] [--logging {CRITICAL,FATAL,ERROR,WARN,WARNING,INFO,DEBUG,NOTSET}]
                [--debug DEBUG]
-               {rest,too} ...
+               {rest,grepo,too} ...
 
 positional arguments:
-  {rest,too}
+  {rest,grepo,too}
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -22,6 +24,11 @@ optional arguments:
 see [docs](https://github.com/podhmo/ioknife/tree/master/docs)
 
 ## Changes
+
+0.2.0
+
+- `ioknife grepo` command is added.
+- `ioknife too`, reading commands setting from stdin. (and add --dump-context)
 
 0.1.0
 
