@@ -25,7 +25,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.print_usage = parser.print_help  # type: ignore
     parser.add_argument(
-        "--log",
+        "--logging",
         choices=list(logging._nameToLevel.keys()),
         default="INFO",
         dest="log_level",
