@@ -1,0 +1,11 @@
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.0 189384 10188 ?        Ss    Jun09   1:40 /sbin/init
+root         2  0.0  0.0      0     0 ?        S     Jun09   0:00 [kthreadd]
+podhmo       4433  0.0  0.0   9676  2972 pts/0    S+    Jun09   0:00 screen
+root      4434  0.0  0.1  24696 17380 ?        Ss    Jun09   0:16 SCREEN
+podhmo       4435  0.0  0.0  10052  6300 pts/1    Ss+   Jun09   0:04 /bin/bash
+podhmo       4440  0.0  0.0  10328  6528 pts/2    Ss+   Jun09   0:06 /bin/bash
+podhmo       4445  0.0  0.0  10328  6444 pts/3    Ss+   Jun09   0:03 /bin/bash
+podhmo       4450  0.0  0.0  10324  6504 pts/4    Ss+   Jun09   0:02 /bin/bash
+podhmo       4539  0.0  0.0   9536  5636 pts/11   Ss+   Jun12   0:00 /bin/bash
+podhmo       7250  4.2  0.8 552408 132156 tty2    Rl+  06:34   0:37 emacs
