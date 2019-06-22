@@ -163,6 +163,7 @@ async def run(
         futs: t.List[t.Awaitable[t.Any]] = []
 
         for name, code in cmds:
+            logger.debug("too: spawn name=%s, code=%r", name, code)
             if shell:
                 p = await asyncio.create_subprocess_shell(
                     " ".join(code),
