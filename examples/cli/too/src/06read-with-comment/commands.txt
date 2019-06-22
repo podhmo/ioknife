@@ -1,0 +1,7 @@
+# 1st
+python -u src/gen.py
+# 2nd
+python -u src/gen.py
+# 3rd
+python -u src/gen.py
+

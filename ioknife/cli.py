@@ -12,12 +12,24 @@ def rest(*, n: int = 1, debug: bool) -> None:
         sys.stdout.write(line)
 
 
-def too(*, cmds: t.List[str], shell: bool, debug: bool) -> None:
+def too(*, cmds: t.List[str], shell: bool, dump_context: bool, debug: bool) -> None:
     """combine multiple commands' stream, keep all foreground and kill all in one Ctrl+C"""
     import shlex
     from ioknife.too import too as run_too
 
-    commands = [shlex.split(cmd) for cmd in cmds]
+    if cmds:
+        commands = [shlex.split(cmd) for cmd in cmds]
+    else:
+        commands = [
+            shlex.split(line.rstrip())
+            for line in sys.stdin
+            if line.strip() and not line.startswith("#")
+        ]
+
+    if dump_context:
+        for cmd in commands:
+            print(cmd)
+        sys.exit(0)
     run_too(commands, debug=debug, shell=shell)
 
 
@@ -77,6 +89,7 @@ def main() -> None:
     sparser.set_defaults(subcommand=fn)
     sparser.add_argument("--cmd", action="append", dest="cmds")
     sparser.add_argument("--shell", action="store_true")
+    sparser.add_argument("--dump-context", action="store_true")
 
     args = parser.parse_args()
     params = vars(args).copy()
