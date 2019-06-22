@@ -1,7 +1,21 @@
 import typing as t
 import logging
-import contextlib
 import asyncio
+
+try:
+    from contextlib import asynccontextmanager
+except ImportError:
+    from ._contextlib_py36 import asynccontextmanager
+try:
+    from asyncio import run
+except ImportError:
+
+    def run(coro: t.Awaitable[t.Any], *, debug: bool = False) -> None:
+        loop = asyncio.get_event_loop()
+        if debug:
+            loop.set_debug(True)
+        loop.run_until_complete(coro)
+
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +37,7 @@ async def queue_as_aiter(q: "asyncio.Queue[T]") -> t.AsyncIterator[T]:
                 q.task_done()
 
 
-@contextlib.asynccontextmanager
+@asynccontextmanager
 async def consuming(
     q: "asyncio.Queue[T]", ause: t.Callable[[t.AsyncIterator[T]], t.Awaitable[None]]
 ) -> t.AsyncIterator[t.Callable[[t.AsyncIterator[T]], t.Awaitable[None]]]:

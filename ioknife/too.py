@@ -6,7 +6,7 @@ import signal
 from functools import partial
 from collections import defaultdict
 from asyncio.subprocess import Process
-from .aioutils import consuming
+from . import aioutils
 
 
 logger = logging.getLogger(__name__)
@@ -159,7 +159,7 @@ async def run(
     suprvisor = _Supervisor(loop=loop)
     q: asyncio.Queue[Row] = asyncio.Queue()
 
-    async with consuming(q, display) as asend:
+    async with aioutils.consuming(q, display) as asend:
         futs: t.List[t.Awaitable[t.Any]] = []
 
         for name, code in cmds:
@@ -202,7 +202,7 @@ def too(
         feed=feed,
         shell=shell,
     )
-    asyncio.run(coro, debug=debug)
+    aioutils.run(coro, debug=debug)
 
     if debug:
 
@@ -210,4 +210,4 @@ def too(
             current_task = asyncio.current_task()
             assert not [t for t in asyncio.all_tasks() if t != current_task]
 
-        asyncio.run(_shutdown_check(), debug=debug)
+        aioutils.run(_shutdown_check(), debug=debug)
