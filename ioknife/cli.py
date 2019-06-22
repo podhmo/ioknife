@@ -7,7 +7,7 @@ import logging
 def rest(*, n: int = 1, debug: bool) -> None:
     """first n lines, write to stderr, rest, write to stdout"""
     for i, line in zip(range(n), sys.stdin):
-        sys.stderr.write(line)
+        sys.stderr.write(f"\x1b[90m{line}\x1b[0m")
     for line in sys.stdin:
         sys.stdout.write(line)
 
