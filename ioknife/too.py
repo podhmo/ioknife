@@ -88,7 +88,9 @@ def _iter_commands_with_normalized_style(
     [1] bar <cmd>
     """
 
-    def _gen_uid(i, name, *, fmt="[{i:>%d}] {name}" % (len(str(len(xs))))):
+    def _gen_uid(
+        i: int, name: str, *, fmt: str = "[{i:>%d}] {name}" % (len(str(len(xs))))
+    ) -> uid:
         return uid(fmt.format(i=i, name=name))
 
     if not xs:

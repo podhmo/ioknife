@@ -1,10 +1,11 @@
+import typing as t
 from functools import wraps
 
 
 class _GeneratorContextManagerBase:
     """Shared functionality for @contextmanager and @asynccontextmanager."""
 
-    def __init__(self, func, args, kwds):
+    def __init__(self, func, args, kwds):  # type: ignore
         self.gen = func(*args, **kwds)
         self.func, self.args, self.kwds = func, args, kwds
         # Issue 19330: ensure context manager instances have good docstrings
@@ -22,13 +23,13 @@ class _GeneratorContextManagerBase:
 class _AsyncGeneratorContextManager(_GeneratorContextManagerBase):
     """Helper for @asynccontextmanager."""
 
-    async def __aenter__(self):
+    async def __aenter__(self):  # type: ignore
         try:
             return await self.gen.__anext__()
         except StopAsyncIteration:
             raise RuntimeError("generator didn't yield") from None
 
-    async def __aexit__(self, typ, value, traceback):
+    async def __aexit__(self, typ, value, traceback):  # type: ignore
         if typ is None:
             try:
                 await self.gen.__anext__()
@@ -64,7 +65,12 @@ class _AsyncGeneratorContextManager(_GeneratorContextManagerBase):
                     raise
 
 
-def asynccontextmanager(func):
+T = t.TypeVar("T")
+
+
+def asynccontextmanager(
+    func: t.Callable[..., t.AsyncIterator[T]]
+) -> t.Callable[..., t.AsyncContextManager[T]]:
     """@asynccontextmanager decorator.
 
     Typical usage:
@@ -93,7 +99,7 @@ def asynccontextmanager(func):
     """
 
     @wraps(func)
-    def helper(*args, **kwds):
-        return _AsyncGeneratorContextManager(func, args, kwds)
+    def helper(*args, **kwds):  # type: ignore
+        return _AsyncGeneratorContextManager(func, args, kwds)  # type: ignore
 
     return helper

@@ -5,21 +5,14 @@ import asyncio
 try:
     from contextlib import asynccontextmanager
 except ImportError:
-    from ._contextlib_py36 import asynccontextmanager
+    from .compat._contextlib_py36 import asynccontextmanager
 try:
-    from asyncio import run
+    from asyncio import run  # noqa
 except ImportError:
-
-    def run(coro: t.Awaitable[t.Any], *, debug: bool = False) -> None:
-        loop = asyncio.get_event_loop()
-        if debug:
-            loop.set_debug(True)
-        loop.run_until_complete(coro)
-
+    from .compat._asyncio_py36 import run  # type: ignore
+run  # NOQA
 
 logger = logging.getLogger(__name__)
-
-
 T = t.TypeVar("T")
 
 
