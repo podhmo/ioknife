@@ -4,14 +4,17 @@
 
 ```console
 $ ioknife -h
-usage: ioknife [-h] [--log {CRITICAL,FATAL,ERROR,WARN,WARNING,INFO,DEBUG,NOTSET}] {rest} ...
+usage: ioknife [-h] [--logging {CRITICAL,FATAL,ERROR,WARN,WARNING,INFO,DEBUG,NOTSET}]
+               [--debug DEBUG]
+               {rest,too} ...
 
 positional arguments:
-  {rest}
+  {rest,too}
 
 optional arguments:
   -h, --help            show this help message and exit
-  --log {CRITICAL,FATAL,ERROR,WARN,WARNING,INFO,DEBUG,NOTSET}
+  --logging {CRITICAL,FATAL,ERROR,WARN,WARNING,INFO,DEBUG,NOTSET}
+  --debug DEBUG
 ```
 
 ## subcommands
@@ -23,3 +26,7 @@ see [docs](https://github.com/podhmo/ioknife/tree/master/docs)
 0.1.0
 
 - `ioknife too` command is added.
+
+0.0.0
+
+- `ioknife rest` command is added.
