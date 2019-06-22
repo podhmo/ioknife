@@ -2,10 +2,9 @@ import typing as t
 import sys
 import logging
 import asyncio
-import signal
-from functools import partial
 from collections import defaultdict
 from asyncio.subprocess import Process
+from . import signalhandle
 from . import aioutils
 
 
@@ -18,42 +17,6 @@ outtype = t.NewType("outtype", str)  # "stdout" | "stderr"
 Row = t.Tuple[uid, Process, outtype, str]
 FeedFunc = t.Callable[[uid, Process, outtype], t.AsyncIterator[Row]]
 DisplayFunc = t.Callable[[t.AsyncIterator[Row]], t.Awaitable[None]]
-
-
-class _Supervisor:
-    def __init__(self, *, loop: asyncio.AbstractEventLoop) -> None:
-        self.ps: t.List[Process] = []
-        self.loop = loop
-        self.on_init()  # xxx:
-
-    def on_init(self) -> None:
-        self.loop.add_signal_handler(
-            signal.SIGINT, partial(self.send_signal, signal.SIGINT)
-        )
-        self.loop.add_signal_handler(
-            signal.SIGTERM, partial(self.send_signal, signal.SIGTERM)
-        )
-
-    def watch(self, p: Process) -> None:
-        self.ps.append(p)
-
-    def send_signal(self, sig: int) -> None:
-        logger.info("send signal (%s)", sig)
-        for p in self.ps:
-            try:
-                p.send_signal(sig)
-            except ProcessLookupError:
-                logger.warning(
-                    "send signal %s  -- ProcessLookupError -- pid=%s", sig, p.pid
-                )
-
-    def terminate(self) -> None:
-        for p in self.ps:
-            p.terminate()
-
-    def kill(self) -> None:
-        for p in self.ps:
-            p.kill()
 
 
 async def feed(
@@ -156,7 +119,7 @@ async def run(
     shell: bool = False,
 ) -> None:
     loop = loop or asyncio.get_event_loop()
-    suprvisor = _Supervisor(loop=loop)
+    signal_demux = signalhandle.Demux(loop=loop)
     q: asyncio.Queue[Row] = asyncio.Queue()
 
     async with aioutils.consuming(q, display) as asend:
@@ -177,7 +140,7 @@ async def run(
                     stderr=asyncio.subprocess.PIPE,
                 )
 
-            suprvisor.watch(p)
+            signal_demux.connect(p)
 
             futs.append(asend(feed(name, p, outtype("stdout"))))  # type: ignore
             futs.append(asend(feed(name, p, outtype("stderr"))))  # type: ignore
