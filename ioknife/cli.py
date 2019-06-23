@@ -3,6 +3,8 @@ import sys
 import contextlib
 import logging
 
+logger = logging.getLogger(__name__)
+
 
 def rest(*, n: int = 1, debug: bool) -> None:
     """first n lines, write to stderr, rest, write to stdout"""
@@ -10,6 +12,42 @@ def rest(*, n: int = 1, debug: bool) -> None:
         sys.stderr.write(f"\x1b[90m{line}\x1b[0m")
     for line in sys.stdin:
         sys.stdout.write(line)
+
+
+def sponge(
+    *,
+    filename: str,
+    append: bool = False,
+    tee: bool = False,
+    max_memory_size: int,
+    debug: bool,
+) -> None:
+    """soak up all input from stdin and write it to"""
+    from tempfile import SpooledTemporaryFile
+
+    with contextlib.ExitStack() as s:
+        tmpio = SpooledTemporaryFile(
+            max_size=max_memory_size, mode="w+", prefix="sponge."
+        )
+        for line in sys.stdin:
+            tmpio.write(line)
+
+        has_file = bool(tmpio.name is not None)
+        if has_file:
+            logger.info("sponge: using temporary file (%s)", tmpio.name)
+            tmpio = s.enter_context(tmpio)
+
+        mode = "a" if append else "w"
+
+        with open(filename, mode) as wf:
+            tmpio.seek(0)
+            if tee:
+                for line in tmpio:
+                    wf.write(line)
+                    sys.stdout.write(line)
+            else:
+                for line in tmpio:
+                    wf.write(line)
 
 
 def too(*, cmds: t.List[str], shell: bool, dump_context: bool, debug: bool) -> None:
@@ -82,6 +120,20 @@ def main() -> None:
     sparser.set_defaults(subcommand=fn)
     sparser.add_argument("pattern")
     sparser.add_argument("filename", nargs="?")
+
+    # sponge
+    fn = sponge  # type: ignore
+    sparser = subparsers.add_parser(fn.__name__, description=fn.__doc__)
+    sparser.set_defaults(subcommand=fn)
+    sparser.add_argument("-a", "--append", action="store_true")
+    sparser.add_argument("--tee", action="store_true")
+    sparser.add_argument(
+        "--max-memory-size",
+        type=int,
+        default=24 * 1024 * 1024,
+        help="default: 24 * 1024 * 1024 bytes",
+    )
+    sparser.add_argument("filename")
 
     # too
     fn = too  # type: ignore

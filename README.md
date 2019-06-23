@@ -8,10 +8,10 @@ knives for io.
 $ ioknife -h
 usage: ioknife [-h] [--logging {CRITICAL,FATAL,ERROR,WARN,WARNING,INFO,DEBUG,NOTSET}]
                [--debug DEBUG]
-               {rest,grepo,too} ...
+               {rest,grepo,sponge,too} ...
 
 positional arguments:
-  {rest,grepo,too}
+  {rest,grepo,sponge,too}
 
 optional arguments:
   -h, --help            show this help message and exit
