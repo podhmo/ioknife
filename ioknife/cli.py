@@ -71,6 +71,17 @@ def too(*, cmds: t.List[str], shell: bool, dump_context: bool, debug: bool) -> N
     run_too(commands, debug=debug, shell=shell)
 
 
+def delayed(*, cmd: str, args: t.List[str], wait_time: float, debug: bool) -> None:
+    """delayed execution"""
+    import os
+    import time
+
+    logger.debug("wait %f seconds", wait_time)
+    time.sleep(float(wait_time))
+    logger.debug("exec %s %s", cmd, args)
+    os.execvp(cmd, [cmd, *args])
+
+
 def grepo(pattern: str, filename: t.Optional[str] = None, *, debug: bool) -> None:
     """grep -o <pattern> and write matched line to stderr"""
 
@@ -142,6 +153,14 @@ def main() -> None:
     sparser.add_argument("--cmd", action="append", dest="cmds")
     sparser.add_argument("--shell", action="store_true")
     sparser.add_argument("--dump-context", action="store_true")
+
+    # delayed
+    fn = delayed  # type: ignore
+    sparser = subparsers.add_parser(fn.__name__, description=fn.__doc__)
+    sparser.set_defaults(subcommand=fn)
+    sparser.add_argument("cmd")
+    sparser.add_argument("args", nargs="*")
+    sparser.add_argument("-n", "--wait-time", type=float, default=1.0)
 
     args = parser.parse_args()
     params = vars(args).copy()
